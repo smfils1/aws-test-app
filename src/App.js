@@ -5,6 +5,11 @@ import Amplify from "aws-amplify";
 import awsconfig from "./aws-exports";
 import { withAuthenticator } from "aws-amplify-react"; // or 'aws-amplify-react-native';
 import fetchPic from "./utils/fetchPic";
+import {API, graphqlOperation} from "aws-amplify"
+import {onDeleteImage} from './graphql/subscriptions';
+import {getImage} from './graphql/queries';
+import {deleteImage} from './graphql/mutations';
+
 
 Amplify.configure(awsconfig);
 
@@ -13,8 +18,31 @@ class App extends Component {
         image: "#"
     };
 
+    getPic = async () => {
+        try{
+            const {data: {
+                getImage : {
+                    image
+                }
+            }} = await API.graphql(graphqlOperation(getImage, { id: '1' }))
+            return image            
+            
+        } catch { return }       
+        
+    }
+
+    intervalID = 0
+
     async componentDidMount() {
-        this.setState({ image: await fetchPic() });
+        this.intervalID = setInterval(async () => {
+            const image = await this.getPic()
+            this.setState({image})
+        }, 30000);
+        
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.intervalID)
     }
 
     render() {
