@@ -34,6 +34,8 @@ class App extends Component {
     intervalID = 0
 
     async componentDidMount() {
+        const image = await this.getPic()
+        this.setState({image})
         this.intervalID = setInterval(async () => {
             const image = await this.getPic()
             this.setState({image})
