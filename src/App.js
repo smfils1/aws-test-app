@@ -39,7 +39,7 @@ class App extends Component {
         this.intervalID = setInterval(async () => {
             const image = await this.getPic()
             this.setState({image})
-        }, 30000);
+        }, 1800000);
         
     }
 
